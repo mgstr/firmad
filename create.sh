@@ -1,10 +1,20 @@
+# download archive with data
+curl -sO http://avaandmed.rik.ee/andmed/ARIREGISTER/ariregister_csv.zip
+
+unzip ariregister_csv.zip -d data/
+ls data/ettevotja_rekvisiidid_*.csv | head -1 | grep -oP '\d\d\d\d-\d\d-\d\d' >data/export-date.csv     # remember data exporting date
+mv data/ettevotja_rekvisiidid_*.csv data/ettevotja_rekvisiidid.csv                                      # rename file for importing
+
+# remeber data export date to set docker tag later
+export FIRMAD_EXPORT_DATE=`cat data/export-date.csv`
+
 # create container with downloaded data
 
 # make sure there is not temp container running
 # can produce error message if there is no 'firmad-temp' container 
 docker rm -f firmad-temp
 
-# crete a temp container with postgres
+# create a temp container with postgres that will import data
 docker run --name firmad-temp -d -e "PGDATA=/home" --volume $PWD/data:/import --volume $PWD/_init:/docker-entrypoint-initdb.d postgres:9.6
 
 # now we need to wait till scripts in the /docker-entrypoint-initdb.d will be processed
