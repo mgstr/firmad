@@ -5,19 +5,30 @@ Free open data can be downloaded from [Avaandmete portaal](https://opendata.riik
 
 This project converts this data into PostgreSQL database that is provided as a Docker image for easy consumption. It also adds full text search capabilities to search company data by name, address or location.
 
-## image creation
+## Image creation
 
 Run `create.sh` to generate a docker image with data and push it into `mgstr\firmad` Docker repository.
 
 IMPORTANT: comment last 4 lines of script if you only want to consume image locally.
 
-## container usage
+## Container usage
 
 You can consume the container by running it:
 
-     docker run -d --name firmad-test mgstr/firmad.
+     docker run -d --name firmad-test mgstr/firmad
 
 Access to the PostgreSQL database is done using default [PostgreSQL image](https://hub.docker.com/_/postgres/) 'postgres:password' credentials.
+So for *playing* with database just attach to the running container:
+
+     docker exec -it firmad-test /bin/bash
+
+and run psql:
+
+     PGPASSWORD=password psql -U postgres
+
+and run sql statements:
+
+     select * from company limit 3;
 
 ## Tables
 
