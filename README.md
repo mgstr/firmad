@@ -7,13 +7,13 @@ This project converts this data into PostgreSQL database that is provided as a D
 
 ## Image creation
 
-Run `create.sh` to generate a docker image with data and push it into `mgstr\firmad` Docker repository.
+Run `create.sh` to generate a docker image with data and push it into `mgstr/firmad` Docker repository.
 
 IMPORTANT: comment last 4 lines of script if you only want to consume image locally.
 
 ## Container usage
 
-You can consume the container by running it:
+You can consume data by creating container from `mgstr/firmad` image:
 
      docker run -d --name firmad-test mgstr/firmad
 
