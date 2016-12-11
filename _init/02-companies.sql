@@ -19,7 +19,7 @@ create table company (
 );
 
 -- don't use copy SQL command since it runs on the server, but file is located locally!
-\copy company from '/docker-entrypoint-initdb.d/ettevotja_rekvisiidid.csv' with csv delimiter ';' header;
+\copy company from '/import/ettevotja_rekvisiidid.csv' with csv delimiter ';' header;
 
 -- drop unused fields
 alter table company drop column ettevotja_staatus;
