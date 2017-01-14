@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # download archive with data
 curl -sO http://avaandmed.rik.ee/andmed/ARIREGISTER/ariregister_csv.zip
 
