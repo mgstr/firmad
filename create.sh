@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # download archive with data
-curl -sO http://avaandmed.rik.ee/andmed/ARIREGISTER/ariregister_csv.zip
+curl -O http://avaandmed.rik.ee/andmed/ARIREGISTER/ariregister_csv.zip
 
 unzip ariregister_csv.zip -d data/
 ls data/ettevotja_rekvisiidid_*.csv | head -1 | grep -oP '\d\d\d\d-\d\d-\d\d' >data/export-date.csv     # remember data exporting date
@@ -13,18 +13,14 @@ export FIRMAD_EXPORT_DATE=`cat data/export-date.csv`
 # create container with downloaded data
 
 # make sure there is not temp container running
-# can produce error message if there is no 'firmad-temp' container 
-docker rm -f firmad-temp
+# ignore error message if there is no 'firmad-temp' container 
+docker rm -f firmad-temp 2>&1 | grep -v "No such container: firmad-temp"
 
 # create a temp container with postgres that will import data
 docker run --name firmad-temp -d -e "PGDATA=/home" --volume $PWD/data:/import --volume $PWD/_init:/docker-entrypoint-initdb.d postgres:9.6
 
 # now we need to wait till scripts in the /docker-entrypoint-initdb.d will be processed
-# for now just wait 30 seconds
-sleep 30
-
-# show log to make sure initialization is complete
-docker logs firmad-temp
+(docker logs --follow firmad-temp 2>&1) | grep --max-count=1 --fixed-strings "INFO:  data importing complete"
 
 # create a new image from firmad-temp container
 docker commit firmad-temp firmad:$FIRMAD_EXPORT_DATE
